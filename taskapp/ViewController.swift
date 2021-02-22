@@ -12,14 +12,13 @@ import UserNotifications
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
   @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var searchButton: UIBarButtonItem!
   
   //Realmインスタンスを取得する
   let realm = try! Realm()
   var task: Task!
-  var searchBar: UISearchBar!
-  var searchBarHeight: CGFloat = 44
-  var topSafeAreaHeight: CGFloat = 0
+  
+  let searchBar = UISearchBar()
+  var cancel_result: Results<Task>?
   
   //DB内のタスクが格納されるリスト
   //日付の近い順でソート:昇順
@@ -29,38 +28,77 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
-    
-    searchBar = UISearchBar()
-    searchBar.delegate = self
-    searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: searchBarHeight)
-    searchBar.showsCancelButton = true
+    cancel_result = taskArray
     
     tableView.delegate = self
     tableView.dataSource = self
-    tableView.tableHeaderView = searchBar
-    tableView.contentOffset = CGPoint(x: 0, y: searchBarHeight)
+    
+    searchBar.placeholder = "検索"
+    searchBar.delegate = self
+    //searchBar.showsCancelButton = true
+    searchBar.enablesReturnKeyAutomatically = false
+    //searchBar.scopeButtonTitles = ["全体", "カテゴリー"]
+    //earchBar.showsCancelButton = true
     
   }
   
-  override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
-    topSafeAreaHeight = tableView.safeAreaInsets.top
-    print(topSafeAreaHeight)
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
   }
   
-  @IBAction func searchButtonClick(_ sender: Any) {
-    UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveLinear], animations: {
-      self.tableView.contentOffset = CGPoint(x: 0, y: -self.topSafeAreaHeight)
-    }, completion: nil)
+  //sectionを使うときのメソッド
+  func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    return ""
   }
   
+  //sectionにsearchBarを設置
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    return searchBar
+  }
+  
+  //searchBarの高さを設定
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    return 44
+  }
+  
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return 1
+  }
+  
+  func searchItems(searchText: String) {
+    guard let searchText = searchBar.text else {return}
+    
+    let result = realm.objects(Task.self).filter("category BEGINSWITH '\(searchText)'")
+    let count = result.count
+    
+    if (count == 0) {
+      taskArray = realm.objects(Task.self)
+    } else {
+      taskArray = result
+    }
+    tableView.reloadData()
+  }
+  
+  //検索ボタンを押したときのメソッド
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.endEditing(true)
+    searchItems(searchText: searchBar.text! as String)
+  }
+  
+  //searchBarのテキストが変更されるごとに呼び出される
+  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    searchItems(searchText: searchText)
+  }
+  
+  /*
+  //キャンセルボタンを押したときのメソッド
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchBar.text = ""
-    tableView.endEditing(true)
-    //searchResult = items
+    searchBar.endEditing(true)
+    taskArray = cancel_result!
     tableView.reloadData()
-
   }
+  */
   
   //データの数を返すメソッド
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

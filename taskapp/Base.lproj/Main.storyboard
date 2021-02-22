@@ -150,21 +150,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="KE0-vl-FCa">
                         <barButtonItem key="leftBarButtonItem" image="line.horizontal.3.decrease.circle" catalog="system" id="b7i-sM-8Uu"/>
-                        <rightBarButtonItems>
-                            <barButtonItem systemItem="add" id="LIT-ni-p6D">
-                                <connections>
-                                    <segue destination="kbJ-j9-C2m" kind="show" id="ape-8D-Thb"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem width="27" systemItem="search" id="O9I-ew-u7H">
-                                <connections>
-                                    <action selector="searchButtonClick:" destination="yhA-tj-SMp" id="2oq-j4-UsB"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="LIT-ni-p6D">
+                            <connections>
+                                <segue destination="kbJ-j9-C2m" kind="show" id="ape-8D-Thb"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="searchButton" destination="O9I-ew-u7H" id="f4f-Xx-RPr"/>
                         <outlet property="tableView" destination="Fzb-MF-Tx3" id="R1z-NH-SH6"/>
                         <segue destination="kbJ-j9-C2m" kind="show" identifier="cellSegue" id="LFd-f9-slu"/>
                     </connections>
