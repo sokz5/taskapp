@@ -111,14 +111,9 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Fzb-MF-Tx3">
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <searchBar key="tableHeaderView" contentMode="redraw" showsCancelButton="YES" id="pZk-OY-14J">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                    <textInputTraits key="textInputTraits"/>
-                                </searchBar>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="mxZ-xl-lXC" detailTextLabel="x3g-9E-Rar" style="IBUITableViewCellStyleSubtitle" id="KbO-fQ-hvI">
-                                        <rect key="frame" x="0.0" y="72" width="414" height="55.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="414" height="55.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KbO-fQ-hvI" id="2Db-pa-j3X">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="55.5"/>
@@ -154,13 +149,22 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="KE0-vl-FCa">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="LIT-ni-p6D">
-                            <connections>
-                                <segue destination="kbJ-j9-C2m" kind="show" id="ape-8D-Thb"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="leftBarButtonItem" image="line.horizontal.3.decrease.circle" catalog="system" id="b7i-sM-8Uu"/>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="LIT-ni-p6D">
+                                <connections>
+                                    <segue destination="kbJ-j9-C2m" kind="show" id="ape-8D-Thb"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem width="27" systemItem="search" id="O9I-ew-u7H">
+                                <connections>
+                                    <action selector="searchButtonClick:" destination="yhA-tj-SMp" id="2oq-j4-UsB"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="searchButton" destination="O9I-ew-u7H" id="f4f-Xx-RPr"/>
                         <outlet property="tableView" destination="Fzb-MF-Tx3" id="R1z-NH-SH6"/>
                         <segue destination="kbJ-j9-C2m" kind="show" identifier="cellSegue" id="LFd-f9-slu"/>
                     </connections>
@@ -192,6 +196,7 @@
         <segue reference="LFd-f9-slu"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="line.horizontal.3.decrease.circle" catalog="system" width="128" height="121"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

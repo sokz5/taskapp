@@ -9,13 +9,17 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var searchButton: UIBarButtonItem!
   
   //Realmインスタンスを取得する
   let realm = try! Realm()
   var task: Task!
+  var searchBar: UISearchBar!
+  var searchBarHeight: CGFloat = 44
+  var topSafeAreaHeight: CGFloat = 0
   
   //DB内のタスクが格納されるリスト
   //日付の近い順でソート:昇順
@@ -25,9 +29,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   override func viewDidLoad() {
     super.viewDidLoad()
     // Do any additional setup after loading the view.
+    
+    searchBar = UISearchBar()
+    searchBar.delegate = self
+    searchBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: searchBarHeight)
+    searchBar.showsCancelButton = true
+    
     tableView.delegate = self
     tableView.dataSource = self
+    tableView.tableHeaderView = searchBar
+    tableView.contentOffset = CGPoint(x: 0, y: searchBarHeight)
     
+  }
+  
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    topSafeAreaHeight = tableView.safeAreaInsets.top
+    print(topSafeAreaHeight)
+  }
+  
+  @IBAction func searchButtonClick(_ sender: Any) {
+    UIView.animate(withDuration: 0.1, delay: 0.0, options: [.curveLinear], animations: {
+      self.tableView.contentOffset = CGPoint(x: 0, y: -self.topSafeAreaHeight)
+    }, completion: nil)
+  }
+  
+  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.text = ""
+    tableView.endEditing(true)
+    //searchResult = items
+    tableView.reloadData()
+
   }
   
   //データの数を返すメソッド
