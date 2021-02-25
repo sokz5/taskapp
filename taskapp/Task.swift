@@ -28,3 +28,15 @@ class Task: Object {
     return "id"
   }
 }
+
+class Category: Object {
+  //管理用ID
+  @objc dynamic var id = 0
+  
+  //カテゴリー
+  @objc dynamic var category = ""
+  
+  override static func primaryKey() -> String? {
+    return "id"
+  }
+}

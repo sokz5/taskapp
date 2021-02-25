@@ -17,8 +17,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   let realm = try! Realm()
   var task: Task!
   
+  
   let searchBar = UISearchBar()
   var cancel_result: Results<Task>?
+  
+  var categorylist: Results<Category>?
+  var categorycheck = try! Realm().objects(Category.self)
+  var filtercategory:String = ""
   
   //DB内のタスクが格納されるリスト
   //日付の近い順でソート:昇順
@@ -33,15 +38,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     tableView.delegate = self
     tableView.dataSource = self
     
-    searchBar.placeholder = "検索"
+    searchBar.placeholder = "タイトルを検索"
     searchBar.delegate = self
     //searchBar.showsCancelButton = true
     searchBar.enablesReturnKeyAutomatically = false
     //searchBar.scopeButtonTitles = ["全体", "カテゴリー"]
     //earchBar.showsCancelButton = true
     
+    //カテゴリーの個数が0個であることを検出したとき自動的にid=0で"指定なし"のカテゴリーを作成
+    if categorycheck.count == 0 {
+      try! realm.write {
+        let category = Category()
+        category.id = 0
+        category.category = "指定なし"
+        self.realm.add(category, update: .modified)
+        print(categorycheck.count)
+      }
+    }
   }
-  
+    
+  //メモリー警告
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
   }
@@ -61,14 +77,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     return 44
   }
   
+  //セクションの数を返す
   func numberOfSections(in tableView: UITableView) -> Int {
     return 1
   }
   
+  //検索処理を行う関数
   func searchItems(searchText: String) {
     guard let searchText = searchBar.text else {return}
     
-    let result = realm.objects(Task.self).filter("category BEGINSWITH '\(searchText)'")
+    let result = realm.objects(Task.self).filter("title BEGINSWITH '\(searchText)'")
     let count = result.count
     
     if (count == 0) {
@@ -126,6 +144,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   //各セルを選択したときに実行されるメソッド
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     performSegue(withIdentifier: "cellSegue", sender: nil)
+    
   }
   
   //セルが削除可能なことを伝えるメソッド
@@ -160,26 +179,42 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
   }
   
-  //segueで画面遷移するときに呼ばれる
+  //segueで画面遷移するときに呼ばれる　複数画面に遷移するので条件分岐
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    let inputViewController:InputViewController = segue.destination as! InputViewController
+    
     if segue.identifier == "cellSegue" {
+      let inputViewController:InputViewController = segue.destination as! InputViewController
       let indexPath = self.tableView.indexPathForSelectedRow
       inputViewController.task = taskArray[indexPath!.row]
+      inputViewController.taskSave.isEnabled = true
+      //inputViewController.task = task
+    } else if segue.identifier == "CategoryFilter"  {
+      //let categoryfilter: CategoryFilterViewController = segue.destination as! CategoryFilterViewController
+      //categoryfilter.categoryArray = categorylist!
     } else {
+      let inputViewController:InputViewController = segue.destination as! InputViewController
       let task = Task()
       let allTasks = realm.objects(Task.self)
+      task.category = "指定なし"
+      inputViewController.task = task
       if allTasks.count != 0 {
         task.id = allTasks.max(ofProperty: "id")! + 1
       }
-      inputViewController.task = task
     }
   }
   
-  //入力画面から戻ってきたときにTableViewを更新させる
+  //遷移先から戻ってきたときにTableViewを更新させる　カテゴリー絞り込みにより条件分岐
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    tableView.reloadData()
+    print(filtercategory)
+    if filtercategory == "" {
+      tableView.reloadData()
+    } else {
+      //フィルタリング
+      let result = realm.objects(Task.self).filter("category == '\(filtercategory)'")
+      taskArray = result
+      tableView.reloadData()
+    }
   }
   
 }
