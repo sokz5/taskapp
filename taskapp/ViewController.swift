@@ -195,11 +195,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       let inputViewController:InputViewController = segue.destination as! InputViewController
       let task = Task()
       let allTasks = realm.objects(Task.self)
-      task.category = "指定なし"
-      inputViewController.task = task
+      task.category?.category = "指定なし"
       if allTasks.count != 0 {
         task.id = allTasks.max(ofProperty: "id")! + 1
       }
+      inputViewController.task = task
     }
   }
   
@@ -208,10 +208,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     super.viewWillAppear(animated)
     print(filtercategory)
     if filtercategory == "" {
+      taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: true)
       tableView.reloadData()
     } else {
       //フィルタリング
-      let result = realm.objects(Task.self).filter("category == '\(filtercategory)'")
+      //print(filtercategory)
+      //print(realm.objects(Task.self))
+      let result = realm.objects(Task.self).filter("category.category == '\(filtercategory)'")
       taskArray = result
       tableView.reloadData()
     }

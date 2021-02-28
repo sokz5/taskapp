@@ -57,7 +57,7 @@ class CategoryFilterViewController: UIViewController, UITableViewDelegate, UITab
     let cell = tableView.cellForRow(at: indexPath)
     cell?.accessoryType = .checkmark
     selectcategory = cell?.textLabel?.text!
-    //print(selectcategory!)
+    print(selectcategory!)
   }
   
   //セル選択が解除されたときの動作
@@ -70,18 +70,25 @@ class CategoryFilterViewController: UIViewController, UITableViewDelegate, UITab
   
   //カテゴリー絞り込みをするボタン　didselectRowでcellデータを取得し、データを渡す
   @IBAction func filtering(_ sender: Any) {
-    let viewController = self.storyboard?.instantiateViewController(withIdentifier: "viewcontroller") as! ViewController
-
+    //print(self.presentedViewController!)
+    //let preVC = self.presentingViewController! as! ViewController
+    //let preVC = preNC.viewControllers[preNC.viewControllers.count - 2] as! ViewController
+    //let viewController: ViewController = self.storyboard?.instantiateViewController(withIdentifier: "viewcontroller") as! ViewController
+    let viewController = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! ViewController
+    self.navigationController?.popViewController(animated: true)
+    
     viewController.filtercategory = selectcategory!
-    self.navigationController?.pushViewController(viewController, animated: true)
+    
+    //self.navigationController?.pushViewController(viewController, animated: true)
   }
   
   //カテゴリー絞り込みをリセットするボタン(すべてのタスクを表示)
   @IBAction func resetfiltering(_ sender: Any) {
-    let viewController = self.storyboard?.instantiateViewController(withIdentifier: "viewcontroller") as! ViewController
-
+    let viewController = self.navigationController?.viewControllers[(self.navigationController?.viewControllers.count)! - 2] as! ViewController
+    self.navigationController?.popViewController(animated: true)
+    
     viewController.filtercategory = ""
-    self.navigationController?.pushViewController(viewController, animated: true)
+    //self.navigationController?.pushViewController(viewController, animated: true)
   }
   
 }

@@ -22,6 +22,7 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
   var category:Category!
   var categorylist: Results<Category>?
   var categoryName: String = ""
+  var categoryID: Int = 0
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -33,7 +34,7 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
     titleTextField.text = task!.title
     contentsTextView.text = task!.contents
     datePicker.date = task!.date
-    categoryTextField.text = task!.category
+    categoryTextField.text = task!.category?.category
     
     categorylist = realm.objects(Category.self)
     createPickerView()
@@ -81,6 +82,7 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
     categoryName = categorylist?[row].category ?? ""
     categoryTextField.text = categorylist?[row].category
+    categoryID = categorylist![row].id
   }
   
   //保存ボタンの有効無効判断
@@ -106,7 +108,8 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
       self.task!.contents = self.contentsTextView.text
       self.task!.date = self.datePicker.date
       //self.task.category = self.categoryTextField.text!
-      self.task!.category = self.categoryTextField.text!
+      self.task!.category?.id = self.categoryID
+      self.task!.category?.category = self.categoryTextField.text!
       
       self.realm.add(self.task!, update: .modified)
     }
