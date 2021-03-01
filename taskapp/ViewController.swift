@@ -52,7 +52,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         category.id = 0
         category.category = "指定なし"
         self.realm.add(category, update: .modified)
-        print(categorycheck.count)
+        //print(categorycheck.count)
       }
     }
   }
@@ -195,6 +195,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       let inputViewController:InputViewController = segue.destination as! InputViewController
       let task = Task()
       let allTasks = realm.objects(Task.self)
+      task.category?.id = 0
       task.category?.category = "指定なし"
       if allTasks.count != 0 {
         task.id = allTasks.max(ofProperty: "id")! + 1

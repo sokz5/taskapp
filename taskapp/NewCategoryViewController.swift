@@ -55,9 +55,9 @@ class NewCategoryViewController: UIViewController, UITextFieldDelegate{
     } else {
     try! realm.write {
       self.category.category = self.newCategory.text!
-      self.realm.add(self.category, update: .modified)
+      self.realm.add(self.category ,update: .modified)
     }
-      print(realm.objects(Category.self))
+      //print(realm.objects(Category.self))
       
       self.navigationController?.popViewController(animated: true)}
   }
