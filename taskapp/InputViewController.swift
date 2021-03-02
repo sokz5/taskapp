@@ -21,8 +21,9 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
   var pickerView = UIPickerView()
   var category:Category!
   var categorylist: Results<Category>?
-  var categoryName: String = ""
+  var selectCategory: Category?
   var categoryID: Int = 0
+  var none_category: Bool = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,9 +36,22 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
     contentsTextView.text = task!.contents
     datePicker.date = task!.date
     categoryTextField.text = task!.category?.category
-    
+
     categorylist = realm.objects(Category.self)
     createPickerView()
+    
+    if none_category == true {
+      setPicker()
+    }
+  }
+  
+  //pickerview初期値
+  func setPicker() {
+    pickerView.dataSource = self
+    pickerView.delegate = self
+    selectCategory = categorylist![0]
+    categoryTextField.text = "指定なし"
+    none_category = false
   }
   
   //PickerViewを追加
@@ -80,9 +94,10 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
   
   //PickerViewの各種データを選択したときに呼ばれるメソッド
   func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    categoryName = categorylist?[row].category ?? ""
+    selectCategory = categorylist?[row]
+    print(selectCategory!)
     categoryTextField.text = categorylist?[row].category
-    categoryID = categorylist![row].id
+    //categoryID = categorylist![row].id
   }
   
   //保存ボタンの有効無効判断
@@ -108,8 +123,9 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
       self.task!.contents = self.contentsTextView.text
       self.task!.date = self.datePicker.date
       //self.task.category = self.categoryTextField.text!
-      self.task!.category?.id = self.categoryID
-      self.task!.category?.category = self.categoryTextField.text!
+      //self.task!.category?.id = self.categoryID
+      //self.task!.category?.category = self.categoryTextField.text!
+      self.task!.category = self.selectCategory
       
       self.realm.add(self.task!, update: .modified)
     }

@@ -194,9 +194,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     } else {
       let inputViewController:InputViewController = segue.destination as! InputViewController
       let task = Task()
+      //let category:Category
       let allTasks = realm.objects(Task.self)
-      task.category?.id = 0
-      task.category?.category = "指定なし"
+      //inputViewController.categoryTextField.text = "指定なし"
+      inputViewController.none_category = true
       if allTasks.count != 0 {
         task.id = allTasks.max(ofProperty: "id")! + 1
       }

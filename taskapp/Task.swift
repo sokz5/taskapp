@@ -37,6 +37,6 @@ class Category: Object {
   @objc dynamic var category = ""
   
   override static func primaryKey() -> String? {
-    return ""
+    return "id"
   }
 }
