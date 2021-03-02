@@ -36,6 +36,7 @@ class InputViewController: UIViewController, UITextFieldDelegate, UIPickerViewDe
     contentsTextView.text = task!.contents
     datePicker.date = task!.date
     categoryTextField.text = task!.category?.category
+    selectCategory = task!.category
 
     categorylist = realm.objects(Category.self)
     createPickerView()
